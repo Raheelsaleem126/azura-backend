@@ -5,8 +5,19 @@ const { PORT } = require("./config/db.config");
 const app = express();
 const Role = db.role;
 
+var corsOptions = {
+  origin: "http://localhost:8081"
+};
+
+app.use(cors(corsOptions));
+
+// parse requests of content-type - application/json
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 db.mongoose
-  .connect(`mongodb+srv://root:admin@cluster0.zkcbtdo.mongodb.net/`, {
+  .connect(`mongodb+srv://root:admin@cluster0.iqjcz.mongodb.net/`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -44,6 +55,12 @@ initial()
   .catch((error) => {
     console.log("Error:", error);
   });
+
+  app.get('/', (req, res) => {
+    res.send("hellowod")
+  });
+  require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
 app.listen(PORT, () => {
-  console.log(`The server is running on the https://localhost:${PORT}`);
+  console.log(`The server is running on the http://localhost:${PORT}`);
 });
