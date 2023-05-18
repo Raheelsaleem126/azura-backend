@@ -3,12 +3,13 @@ const ROLES = db.ROLES;
 const User = db.user;
 
 checkDuplicateUsernameOrEmail = async (req, res, next) => {
-
-  console.log(req.body)
+  console.log(req.body);
   // Username
   try {
     let user = await User.findOne({
       username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
     });
 
     if (user) {
@@ -20,6 +21,7 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
     user = await User.findOne({
       email: req.body.email,
     });
+    
 
     if (user) {
       res.status(400).send({ message: "Failed! Email is already in use!" });
@@ -27,7 +29,7 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
     }
 
     next();
-  } catch(err) {
+  } catch (err) {
     res.status(500).send({ message: err });
   }
 };
