@@ -1,7 +1,13 @@
+require("dotenv").config()
 const express = require("express");
 const cors = require("cors");
 const db = require("./models");
-const { PORT } = require("./config/db.config");
+const authRoutes = require('./routes/auth.routes');
+const session=require("express-session");
+const passport = require("passport");
+const discordStrategy=require("./middlewares/discordStrategy")
+// const { PORT } = require("./config/db.config");
+let PORT=process.env.PORT || 3002
 const app = express();
 const Role = db.role;
 
@@ -16,6 +22,20 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+  secret:"sugar and spice",
+  cookie:{
+    maxAge:60000*60*24
+  },
+  resave: false,
+  saveUninitialized:false
+}))
+
+
+app.use(passport.initialize())
+app.use(passport.session())
+
 db.mongoose
   .connect(`mongodb+srv://root:admin@cluster0.iqjcz.mongodb.net/`, {
     useNewUrlParser: true,
@@ -59,8 +79,7 @@ initial()
   app.get('/', (req, res) => {
     res.send("hellowod")
   });
-  require('./routes/auth.routes')(app);
-require('./routes/user.routes')(app);
+  app.use('/auth', authRoutes);
 app.listen(PORT, () => {
   console.log(`The server is running on the http://localhost:${PORT}`);
 });

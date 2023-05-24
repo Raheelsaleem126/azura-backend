@@ -1,5 +1,7 @@
 const config = require("../config/auth.config");
 const db = require("../models");
+const passport = require("passport");
+
 const User = db.user;
 const Role = db.role;
 
@@ -107,3 +109,8 @@ exports.signin = (req, res) => {
       });
     });
 };
+
+
+exports.authenticate=(req,res)=>{
+  res.send(200);
+}
