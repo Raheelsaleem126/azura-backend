@@ -1,18 +1,24 @@
 const mongoose = require("mongoose");
 
-const User = mongoose.model(
+const DiscordUser = mongoose.model(
   "User",
   new mongoose.Schema({
-    username: String,
-    email: String,
-    password: String,
-    roles: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Role",
-      },
-    ],
+    discordId: {
+      type: String,
+      required: true,
+    },
+    username: { type: String, required: true },
+
+    // --- Commented for now can be refactor and used in the future
+    // email: String,
+    // password: String,
+    // roles: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Role",
+    //   },
+    // ],
   })
 );
 
-module.exports = User;
+module.exports = DiscordUser;

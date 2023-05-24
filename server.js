@@ -1,18 +1,19 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require("./models");
-const authRoutes = require('./routes/auth.routes');
-const session=require("express-session");
+const authRoutes = require("./routes/auth.routes");
+const dashboardRoutes = require("./routes//dashboard.route");
+const session = require("express-session");
 const passport = require("passport");
-const discordStrategy=require("./middlewares/discordStrategy")
+const discordStrategy = require("./middlewares/discordStrategy");
 // const { PORT } = require("./config/db.config");
-let PORT=process.env.PORT || 3002
+let PORT = process.env.PORT || 3002;
 const app = express();
 const Role = db.role;
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8081",
 };
 
 app.use(cors(corsOptions));
@@ -23,18 +24,20 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret:"sugar and spice",
-  cookie:{
-    maxAge:60000*60*24
-  },
-  resave: false,
-  saveUninitialized:false
-}))
+app.use(
+  session({
+    secret: "sugar and spice",
+    cookie: {
+      maxAge: 60000 * 60 * 24,
+    },
+    resave: false,
+    saveUninitialized: false,
+    name: "discord.oauth2",
+  })
+);
 
-
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
 db.mongoose
   .connect(`mongodb+srv://root:admin@cluster0.iqjcz.mongodb.net/`, {
@@ -76,10 +79,15 @@ initial()
     console.log("Error:", error);
   });
 
-  app.get('/', (req, res) => {
-    res.send("hellowod")
-  });
-  app.use('/auth', authRoutes);
+//app.get("/", (req, res) => {
+//res.send("hellowod");
+//});
+
+// Middleware  Routes
+app.use("/auth", authRoutes);
+app.use("/dashboard", dashboardRoutes);
+
+// App  Listener
 app.listen(PORT, () => {
   console.log(`The server is running on the http://localhost:${PORT}`);
 });

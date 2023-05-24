@@ -110,7 +110,6 @@ exports.signin = (req, res) => {
     });
 };
 
-
-exports.authenticate=(req,res)=>{
-  res.send(200);
-}
+exports.authenticate = (req, res) => {
+  res.send(req.user);
+};
