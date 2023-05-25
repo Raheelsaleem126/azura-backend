@@ -37,6 +37,7 @@ passport.use(
           const newUser = await DiscordUser.create({
             discordId: profile.id,
             username: profile.username,
+            guilds: profile.guilds,
           });
           const savedUser = await newUser.save();
           done(null, savedUser);

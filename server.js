@@ -3,10 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./models");
 const authRoutes = require("./routes/auth.routes");
-const dashboardRoutes = require("./routes//dashboard.route");
+const dashboardRoutes = require("./routes/dashboard.route");
 const session = require("express-session");
 const passport = require("passport");
 const discordStrategy = require("./middlewares/discordStrategy");
+const path = require("path");
 // const { PORT } = require("./config/db.config");
 let PORT = process.env.PORT || 3002;
 const app = express();
@@ -35,6 +36,14 @@ app.use(
     name: "discord.oauth2",
   })
 );
+
+app.set("view engine", "ejs");
+
+// Setup of view folder
+app.set("views", path.join(__dirname, "views"));
+
+// Setup of public folder
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -79,13 +88,35 @@ initial()
     console.log("Error:", error);
   });
 
-//app.get("/", (req, res) => {
-//res.send("hellowod");
-//});
-
 // Middleware  Routes
 app.use("/auth", authRoutes);
 app.use("/dashboard", dashboardRoutes);
+
+// Home Route
+app.get("/", isAuthenticated, (req, res) => {
+  res.render("home", {
+    users: [
+      { name: "Muhammad Maaz Nizam", email: "maaznizam290@gmail.com" },
+      { name: "Raheel Saleem", email: "raheelsaleem32@gmail.com" },
+      { name: "Husnain Tahir", email: "husnaintahir129@gmail.com" },
+      { name: "Shayan Satti", email: "shayan.satti3@gmail.com" },
+      { name: "Muzammil zaidi", email: "muzammilhassan93@gmail.com" },
+      { name: "Waqar zaka", email: "waqarzaka45@gmail.com" },
+      { name: "Kamran Akmal", email: "kami.ash@gmail.com" },
+    ],
+  });
+});
+
+function isAuthenticated(req, res, next) {
+  if (req.user) {
+    console.log("User is logged in");
+    res.render("/dashboard");
+    next();
+  } else {
+    console.log("User is not logged in");
+    next();
+  }
+}
 
 // App  Listener
 app.listen(PORT, () => {

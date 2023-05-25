@@ -8,6 +8,7 @@ const DiscordUser = mongoose.model(
       required: true,
     },
     username: { type: String, required: true },
+    guilds: { type: String, required: true },
 
     // --- Commented for now can be refactor and used in the future
     // email: String,

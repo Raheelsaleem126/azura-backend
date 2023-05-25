@@ -3,6 +3,7 @@ const router = express.Router();
 const { verifySignUp } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
 const passport = require("passport");
+const { route } = require("./dashboard.route");
 
 router.use(function (req, res, next) {
   res.header(
@@ -21,7 +22,14 @@ router.get(
     successRedirect: "/dashboard",
   })
 );
-//  Browser Cookie
-// s%3AVWD-av6Xqk4EStglWTE28-3JEha2u2Dl.uwrcY%2Bn7MK%2FWYgMQ%2FJASQ0X02uW4gyASyUH6hLEH5TE
-// s%3AIUDSLThpM6PhHHKADPC26uFlSv6_7MRz.v7FLgblGHiWQsXJBYfe5BWQ%2BDSJuDGwzgiv3ALzk1HM
+
+// Logout Route
+router.get("/logout", function (req, res, next) {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 module.exports = router;
