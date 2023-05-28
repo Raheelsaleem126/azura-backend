@@ -41,6 +41,7 @@ passport.use(
           });
           const savedUser = await newUser.save();
           done(null, savedUser);
+          console.log(newUser);
         }
       } catch (error) {
         res.status(422).send({ msg: "There is an error", error });
